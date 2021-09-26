@@ -21,6 +21,22 @@
                 android:id="@+id/menuListOptionMeeting"
                 android:title=""
                 app:showAsAction="never"/>
+            <item
+                android:id="@+id/menuListOptionDocument"
+                android:title=""
+                app:showAsAction="never"/>
+            <item
+                android:id="@+id/menuListOptionSupport"
+                android:title=""
+                app:showAsAction="never"/>
+            <item
+                android:id="@+id/menuListOptionDesign"
+                android:title=""
+                app:showAsAction="never"/>
+            <item
+                android:id="@+id/menuListOptionOther"
+                android:title=""
+                app:showAsAction="never"/>
         </menu>
     </item>
 </menu>
