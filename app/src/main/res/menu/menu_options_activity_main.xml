@@ -6,36 +6,36 @@
 
     <item
         android:id="@+id/menuListOptionTitle"
-        android:title=""
+        android:title="@string/menu_list_all"
         app:showAsAction="always">
         <menu>
             <item
-                android:id="@+id/menuListOptionAll"
-                android:title=""
-                app:showAsAction="never"/>
-            <item
                 android:id="@+id/menuListOptionDevelop"
-                android:title=""
+                android:title="@string/menu_list_develop"
                 app:showAsAction="never"/>
             <item
                 android:id="@+id/menuListOptionMeeting"
-                android:title=""
+                android:title="@string/menu_list_meeting"
                 app:showAsAction="never"/>
             <item
                 android:id="@+id/menuListOptionDocument"
-                android:title=""
+                android:title="@string/menu_list_document"
                 app:showAsAction="never"/>
             <item
                 android:id="@+id/menuListOptionSupport"
-                android:title=""
+                android:title="@string/menu_list_support"
                 app:showAsAction="never"/>
             <item
                 android:id="@+id/menuListOptionDesign"
-                android:title=""
+                android:title="@string/menu_list_design"
                 app:showAsAction="never"/>
             <item
                 android:id="@+id/menuListOptionOther"
-                android:title=""
+                android:title="@string/menu_list_other"
+                app:showAsAction="never"/>
+            <item
+                android:id="@+id/menuListOptionAll"
+                android:title="@string/menu_list_all"
                 app:showAsAction="never"/>
         </menu>
     </item>

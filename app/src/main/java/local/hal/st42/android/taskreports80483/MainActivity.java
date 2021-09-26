@@ -14,6 +14,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 
@@ -107,5 +108,66 @@ public class MainActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_options_activity_main, menu);
         return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem menuListOptionTitle = menu.findItem(R.id.menuListOptionTitle);
+        switch(_menuCategory) {
+            case Consts.ALL:
+                menuListOptionTitle.setTitle(R.string.menu_list_all);
+                break;
+            case Consts.DEVELOP:
+                menuListOptionTitle.setTitle(R.string.menu_list_develop);
+                break;
+            case Consts.MEETING:
+                menuListOptionTitle.setTitle(R.string.menu_list_meeting);
+                break;
+            case Consts.DOCUMENT:
+                menuListOptionTitle.setTitle(R.string.menu_list_document);
+                break;
+            case Consts.SUPPORT:
+                menuListOptionTitle.setTitle(R.string.menu_list_support);
+                break;
+            case Consts.DESIGN:
+                menuListOptionTitle.setTitle(R.string.menu_list_design);
+                break;
+            case Consts.OTHER:
+                menuListOptionTitle.setTitle(R.string.menu_list_other);
+                break;
+        }
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        SharedPreferences        settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor   = settings.edit();
+
+        boolean returnVal = true;
+        int     itemId    = item.getItemId();
+        switch(itemId) {
+            case R.id.menuListOptionAll:
+                _menuCategory = Consts.ALL;
+                editor.putInt("WorkCategory", _menuCategory);
+                invalidateOptionsMenu();
+                break;
+            case R.id.menuListOptionInComplete:
+                _menuCategory = Consts.INCOMPLETE;
+                editor.putInt("TASK", _menuCategory);
+                invalidateOptionsMenu();
+                break;
+            case R.id.menuListOptionAll:
+                _menuCategory = Consts.ALL;
+                editor.putInt("TASK", _menuCategory);
+                invalidateOptionsMenu();
+                break;
+            default:
+                returnVal = super.onOptionsItemSelected(item);
+        }
+        if(returnVal) {
+            createRecyclerView();
+        }
+        editor.commit();
+        return returnVal;
     }
 }
