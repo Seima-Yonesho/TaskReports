@@ -4,38 +4,39 @@ public class Consts {
     /**
      * 新規登録モードを表す定数フィールド。
      */
-    static final int MODE_INSERT = 1;
+    static final int MODE_INSERT = 11;
     /**
      * 更新モードを表す定数フィールド。
      */
-    static final int MODE_EDIT = 2;
-    /**
-     * 全タスクを表す定数フィールド。
-     */
-    public static final int ALL = 11;
+    static final int MODE_EDIT = 12;
     /**
      * 実装を表す定数フィールド。
      */
-    public static final int DEVELOP = 12;
+    public static final int DEVELOP = 0;
     /**
      * 打ち合わせを表す定数フィールド。
      */
-    public static final int MEETING = 13;
+    public static final int MEETING = 1;
     /**
      * 資料作成を表す定数フィールド。
      */
-    public static final int DOCUMENT = 14;
+    public static final int DOCUMENT = 2;
     /**
      * 顧客対応を表す定数フィールド。
      */
-    public static final int SUPPORT = 15;
+    public static final int SUPPORT = 3;
     /**
      * 設計を表す定数フィールド。
      */
-    public static final int DESIGN = 16;
+    public static final int DESIGN = 4;
     /**
      * その他を表す定数フィールド。
      */
-    public static final int OTHER = 17;
+    public static final int OTHER = 5;
+    /**
+     * 全タスクを表す定数フィールド。
+     */
+    public static final int ALL = 6;
 
+    static final String[] CATEGORY = new String[]{"実装", "打ち合わせ", "資料作成", "顧客対応", "設計", "その他"};
 }

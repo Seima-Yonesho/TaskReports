@@ -4,21 +4,32 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import local.hal.st42.android.taskreports80483.dataaccess.Report;
@@ -52,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * レポート情報リストビューモデルオブジェクト。
      */
-    private ReportListViewModel _taskListViewModel;
+    private ReportListViewModel _reportListViewModel;
     /**
      * レポート情報リストLiveDataオブジェクト。
      */
@@ -151,14 +162,34 @@ public class MainActivity extends AppCompatActivity {
                 editor.putInt("WorkCategory", _menuCategory);
                 invalidateOptionsMenu();
                 break;
-            case R.id.menuListOptionInComplete:
-                _menuCategory = Consts.INCOMPLETE;
-                editor.putInt("TASK", _menuCategory);
+            case R.id.menuListOptionDevelop:
+                _menuCategory = Consts.DEVELOP;
+                editor.putInt("WorkCategory", _menuCategory);
                 invalidateOptionsMenu();
                 break;
-            case R.id.menuListOptionAll:
-                _menuCategory = Consts.ALL;
-                editor.putInt("TASK", _menuCategory);
+            case R.id.menuListOptionMeeting:
+                _menuCategory = Consts.MEETING;
+                editor.putInt("WorkCategory", _menuCategory);
+                invalidateOptionsMenu();
+                break;
+            case R.id.menuListOptionDocument:
+                _menuCategory = Consts.DOCUMENT;
+                editor.putInt("WorkCategory", _menuCategory);
+                invalidateOptionsMenu();
+                break;
+            case R.id.menuListOptionSupport:
+                _menuCategory = Consts.SUPPORT;
+                editor.putInt("WorkCategory", _menuCategory);
+                invalidateOptionsMenu();
+                break;
+            case R.id.menuListOptionDesign:
+                _menuCategory = Consts.DESIGN;
+                editor.putInt("WorkCategory", _menuCategory);
+                invalidateOptionsMenu();
+                break;
+            case R.id.menuListOptionOther:
+                _menuCategory = Consts.OTHER;
+                editor.putInt("WorkCategory", _menuCategory);
                 invalidateOptionsMenu();
                 break;
             default:
@@ -169,5 +200,155 @@ public class MainActivity extends AppCompatActivity {
         }
         editor.commit();
         return returnVal;
+    }
+
+    /**
+     * 新規ボタンが押されたときのイベント処理用メソッド。
+     *
+     * @param view 画面部品。
+     */
+    public void onFabAddClicked(View view) {
+//        Intent intent = new Intent(getApplicationContext(), ToDoEditActivity.class);
+//        intent.putExtra("mode", Consts.MODE_INSERT);
+//        startActivity(intent);
+    }
+
+    /**
+     * リスト画面表示用のデータを生成するメソッド。
+     * フィールド_onlyImportantの値に合わせて生成するデータを切り替える。
+     */
+    private void createRecyclerView() {
+        _reportListLiveData.removeObserver(_reportListObserver);
+        _reportListLiveData = _reportListViewModel.getReportList(_menuCategory);
+        _reportListLiveData.observe(MainActivity.this, _reportListObserver);
+    }
+
+    /**
+     * ビューモデル中のメモ情報リストに変更があった際に、画面の更新を行う処理が記述されたクラス。
+     */
+    private class ReportListObserver implements Observer<List<Report>> {
+        @Override
+        public void onChanged(List<Report> reportList) {
+            _adapter.changeReportList(reportList);
+        }
+    }
+
+    /**
+     * リサイクラービューで利用するビューホルダクラス。
+     */
+    private class ReportViewHolder extends RecyclerView.ViewHolder {
+        /**
+         * レポートID
+         */
+        public Integer id;
+        /**
+         * レポートタイトル表示用TextViewフィールド。
+         */
+        public TextView _tvRowTitle;
+        /**
+         * レポート日付表示用TextViewフィールド
+         */
+        public TextView _tvRowDate;
+        /**
+         * レポートのボタン
+         */
+        public Button _btRowEdit;
+
+        /**
+         * コンストラクタ。
+         *
+         * @param itemView リスト1行分の画面部品。
+         */
+        public ReportViewHolder(View itemView) {
+            super(itemView);
+            _tvRowTitle = itemView.findViewById(R.id.tvRowTitle);
+            _tvRowDate = itemView.findViewById(R.id.tvRowDate);
+            _btRowEdit = itemView.findViewById(R.id.btRowEdit);
+        }
+
+    }
+
+    /**
+     * リサイクラービューで利用するアダプタクラス。
+     */
+    private class ReportListAdapter extends RecyclerView.Adapter<ReportViewHolder> {
+        /**
+         * リストデータを表すフィールド。
+         */
+        private List<Report> _listData;
+
+        /**
+         * コンストラクタ。
+         *
+         * @param listData
+         */
+        public ReportListAdapter(List<Report> listData) {
+            _listData = listData;
+        }
+
+        @Override
+        public ReportViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
+            View row = inflater.inflate(R.layout.row, parent, false);
+            row.setOnClickListener(new ListItemClickListener());
+            ReportViewHolder holder = new ReportViewHolder(row);
+            return new ReportViewHolder(row);
+        }
+
+        @Override
+        public void onBindViewHolder(ReportViewHolder holder, int position) {
+            Report item = _listData.get(position);
+            holder.id = item.id;
+            holder._tvRowTitle.setText(Consts.CATEGORY[item.workkind]);
+            holder._btRowEdit.setTag(item.id);
+            holder._btRowEdit.setOnClickListener(new OnEditButtonClickListener());
+            holder._tvRowDate.setText(item.workdate);
+            LinearLayout row = (LinearLayout) holder._tvRowTitle.getParent().getParent();
+//            row.setBackgroundColor(Color.rgb(176, 0, 32));
+
+            row.setTag(item.id);
+        }
+
+        @Override
+        public int getItemCount() {
+            return _listData.size();
+        }
+
+        /**
+         * 内部で保持しているリストデータを丸ごと入れ替えるメソッド。
+         *
+         * @param listData 新しいリストデータ。
+         */
+        public void changeReportList(List<Report> listData) {
+            _listData = listData;
+            notifyDataSetChanged();
+        }
+    }
+
+    /**
+     * リストをタップした時の処理が記述されたメンバクラス。
+     */
+    private class ListItemClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View view) {
+            int idNo = (int) view.getTag();
+            Intent intent = new Intent(getApplicationContext(), ReportDetailActivity.class);
+            intent.putExtra("idNo", idNo);
+            startActivity(intent);
+        }
+    }
+
+    /*
+    * 編集ボタンをタップした時の処理が記述されたメンバクラス。
+     */
+    private class OnEditButtonClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View view){
+            Button btRowEdit = (Button) view;
+            int idNo = (Integer) btRowEdit.getTag();
+            Intent intent = new Intent(getApplicationContext(), ReportEditActivity.class);
+            intent.putExtra("idNo", idNo);
+            startActivity(intent);
+        }
     }
 }
