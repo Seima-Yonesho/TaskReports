@@ -10,15 +10,15 @@
         app:showAsAction="always">
         <menu>
             <item
-                android:id="@+id/menuListOptionInComplete"
-                android:title=""
-                app:showAsAction="never"/>
-            <item
-                android:id="@+id/menuListOptionComplete"
-                android:title=""
-                app:showAsAction="never"/>
-            <item
                 android:id="@+id/menuListOptionAll"
+                android:title=""
+                app:showAsAction="never"/>
+            <item
+                android:id="@+id/menuListOptionDevelop"
+                android:title=""
+                app:showAsAction="never"/>
+            <item
+                android:id="@+id/menuListOptionMeeting"
                 android:title=""
                 app:showAsAction="never"/>
         </menu>
