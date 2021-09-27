@@ -1,11 +1,15 @@
 package local.hal.st42.android.taskreports80483.viewmodel;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import com.google.common.util.concurrent.ListenableFuture;
+
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import local.hal.st42.android.taskreports80483.Consts;
 import local.hal.st42.android.taskreports80483.dataaccess.AppDatabase;
@@ -29,7 +33,7 @@ public class ReportListViewModel extends AndroidViewModel {
     }
 
     /**
-     * メモ情報リストを取得するメソッド。
+     * レポート情報リストを取得するメソッド。
      *
      * @param menuCategory
      * @return レポート情報リストに関連するLiveDateオブジェクト
@@ -38,21 +42,13 @@ public class ReportListViewModel extends AndroidViewModel {
         ReportDAO reportDAO = _db.reportDAO();
         LiveData<List<Report>> reportList;
 
-        if
-
-        switch (menuCategory){
-            case Consts.COMPLETE:
-                taskList = taskDAO.findComplete();
-                break;
-            case Consts.INCOMPLETE:
-                taskList = taskDAO.findInComplete();
-                break;
-            case Consts.ALL:
-                taskList = taskDAO.findAll();
-                break;
-            default:
-                throw new IllegalStateException("Unexpected value: " + menuCategory);
+        if (menuCategory == Consts.ALL){
+            reportList = reportDAO.findAll();
         }
-        return taskList;
+        else {
+            reportList = reportDAO.findByWorkCategory(menuCategory);
+        }
+
+        return reportList;
     }
 }

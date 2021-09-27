@@ -7,4 +7,23 @@
     <string name="menu_list_support">顧客対応</string>
     <string name="menu_list_design">設計</string>
     <string name="menu_list_other">その他</string>
+    <string name="btn_save">登録</string>
+    <string name="btn_delete">削除</string>
+    <string name="btn_edit">編集</string>
+    <string name="tv_title_insert">レポート新規登録</string>
+    <string name="tv_title_edit">レポート編集</string>
+    <string name="tv_input_date">日付：</string>
+    <string name="tv_input_start_time">開始時間：</string>
+    <string name="tv_input_end_time">終了時間：</string>
+    <string name="tv_select_work_category">作業種類：</string>
+    <string name="tv_input_work_note">作業内容</string>
+    <string name="msg_input_date">日付を入力してください</string>
+    <string name="msg_input_start_time">開始時間を入力してください</string>
+    <string name="msg_input_end_time">終了時間を入力してください</string>
+    <string name="msg_save_err">データ更新に失敗しました。もう一度、操作を行ってください。</string>
+    <string name="del_dialog_title">確認!</string>
+    <string name="del_dialog_message">このメモを削除してもよろしいですか?</string>
+    <string name="del_dialog_positive">削除</string>
+    <string name="del_dialog_negative">キャンセル</string>
+    
 </resources>

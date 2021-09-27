@@ -2,7 +2,10 @@ package local.hal.st42.android.taskreports80483.dataaccess;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
+import androidx.room.Delete;
+import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Update;
 
 import com.google.common.util.concurrent.ListenableFuture;
 
@@ -43,4 +46,31 @@ public interface ReportDAO {
      */
     @Query("SELECT * FROM report WHERE workkind = :workkind")
     LiveData<List<Report>> findByWorkCategory(int workkind);
+
+    /**
+     * レポート情報を新規登録するメソッド。
+     *
+     * @param report 登録レポート情報が格納されたReportオブジェクト。
+     * @return 新規登録された主キー値に関連するListenableFutureオブジェクト。
+     */
+    @Insert
+    ListenableFuture<Long> insert(Report report);
+
+    /**
+     * レポート情報を更新するメソッド。
+     *
+     * @param report 更新レポート情報が格納されたReportオブジェクト。
+     * @return 更新件数を表す値に関連するListenableFutureオブジェクト。
+     */
+    @Update
+    ListenableFuture<Integer> update(Report report);
+
+    /**
+     * タスク情報を削除するメソッド。
+     *
+     * @param report 削除レポート情報が格納されたReportオブジェクト。
+     * @return 削除件数を表す値に関連するListenableFutureオブジェクト。
+     */
+    @Delete
+    ListenableFuture<Integer> delete(Report report);
 }

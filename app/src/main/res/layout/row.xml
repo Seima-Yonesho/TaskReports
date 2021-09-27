@@ -11,7 +11,7 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_height="45dp"
-        android:layout_width="330dp">
+        android:layout_width="270dp">
 
         <TextView
             android:id="@+id/tvRowTitle"
@@ -41,8 +41,7 @@
         android:layout_width="wrap_content"
         android:text="編集"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:drawableLeft="@drawable/baseline_edit_24"/>
+        android:drawableLeft="@drawable/baseline_edit_24" />
 
 
 

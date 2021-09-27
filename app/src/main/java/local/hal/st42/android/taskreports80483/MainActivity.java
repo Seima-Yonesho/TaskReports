@@ -208,9 +208,9 @@ public class MainActivity extends AppCompatActivity {
      * @param view 画面部品。
      */
     public void onFabAddClicked(View view) {
-//        Intent intent = new Intent(getApplicationContext(), ToDoEditActivity.class);
-//        intent.putExtra("mode", Consts.MODE_INSERT);
-//        startActivity(intent);
+        Intent intent = new Intent(getApplicationContext(), ReportEditActivity.class);
+        intent.putExtra("mode", Consts.MODE_INSERT);
+        startActivity(intent);
     }
 
     /**

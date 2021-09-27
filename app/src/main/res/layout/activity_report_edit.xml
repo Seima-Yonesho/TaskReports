@@ -32,20 +32,20 @@
             android:id="@+id/tvTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text=""
+            android:text="@string/tv_title_edit"
             android:textSize="25sp" />
     </FrameLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="50dp"
         android:orientation="horizontal">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=""
+            android:text="@string/tv_input_date"
             android:textSize="20sp"/>
 
         <TextView
@@ -68,32 +68,30 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=""
+            android:text="@string/tv_input_start_time"
             android:textSize="20sp"/>
 
         <TextView
             android:id="@+id/etStartTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="25dp"
             android:layout_weight="1"
             android:textSize="18sp"
-            android:onClick="" />
+            android:onClick="showStartTimePickerDialog" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=""
+            android:text="@string/tv_input_end_time"
             android:textSize="20sp"/>
 
         <TextView
             android:id="@+id/etEndTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="25dp"
             android:layout_weight="1"
             android:textSize="18sp"
-            android:onClick="" />
+            android:onClick="showTimePickerDialog" />
 
     </LinearLayout>
 
@@ -102,19 +100,23 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/tv_input_work_note"
+            android:textSize="20sp"/>
+
         <Spinner
             android:id="@+id/spWorkKinds"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="120dp"/>
 
     </LinearLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text=""
-        android:textSize="20sp"/>
+
     <EditText
         android:id="@+id/etInputNote"
         android:layout_width="match_parent"

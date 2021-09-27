@@ -1,4 +1,265 @@
 package local.hal.st42.android.taskreports80483;
 
-public class ReportEditActivity {
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
+import android.content.Intent;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.Toast;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProvider;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
+import local.hal.st42.android.taskreports80483.dataaccess.Report;
+import local.hal.st42.android.taskreports80483.viewmodel.ReportEditViewModel;
+
+/**
+ * ST42 Android 課題6 作業報告管理アプリ
+ *
+ * 第2画面・第4画面表示用アクティビティクラス
+ * 新規登録
+ * 編集
+ * 管理データ項目のうちシステム管理項目以外を入力できるようにする
+ *
+ */
+public class ReportEditActivity extends AppCompatActivity {
+    /**
+     * 新規登録モードか更新モードかを表すフィールド。
+     */
+    private int _mode = Consts.MODE_INSERT;
+    /**
+     * 更新モードの際、現在表示しているリスト情報のデータベース上の主キー値。
+     */
+    private int _idNo = 0;
+    /**
+     * レポート情報編集モデルオブジェクト。
+     */
+    private ReportEditViewModel _reportEditViewModel;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_report_edit);
+
+        ViewModelProvider.AndroidViewModelFactory factory = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication());
+        ViewModelProvider provider = new ViewModelProvider(ReportEditActivity.this, factory);
+        _reportEditViewModel = provider.get(ReportEditViewModel.class);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setTitleTextColor(Color.WHITE);
+
+        //スピナー
+        Spinner spinner = findViewById(R.id.spWorkKinds);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, Consts.CATEGORY);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // spinner に adapter をセット
+        spinner.setAdapter(adapter);
+        // リスナーを登録
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            //　アイテムが選択された時
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Spinner spinner = (Spinner)parent;
+                String item = (String)spinner.getSelectedItem();
+                spinner.setTag(position);
+            }
+            //　アイテムが選択されなかった
+            public void onNothingSelected(AdapterView<?> parent) {
+                //
+            }
+        });
+
+        /**
+         * 戻るボタンを有効にする
+         */
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        Intent intent = getIntent();
+        _mode  = intent.getIntExtra("mode", Consts.MODE_INSERT);
+
+        if(_mode == Consts.MODE_INSERT) {
+            TextView tvTitle = findViewById(R.id.tvTitle);
+            tvTitle.setText(R.string.tv_title_insert);
+
+            Calendar calendar = Calendar.getInstance();
+
+            //SimpleDateFormatクラスでフォーマットパターンを設定する
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
+
+            TextView etInputDate = findViewById(R.id.etDate);
+            etInputDate.setText(sdf.format(calendar.getTime()));
+
+            TextView etStartTime = findViewById(R.id.etStartTime);
+            etStartTime.setText("00:00");
+            TextView etEndTime = findViewById(R.id.etEndTime);
+            etEndTime.setText("00:00");
+        }
+        else {
+            _idNo    = intent.getIntExtra("idNo", 0);
+            Report report = _reportEditViewModel.getReport(_idNo);
+            EditText etInputNote = findViewById(R.id.etInputNote);
+            etInputNote.setText(report.workin);
+            TextView etDate = findViewById(R.id.etDate);
+            etDate.setText(report.workdate);
+        }
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        if(_mode == Consts.MODE_INSERT) {
+            inflater.inflate(R.menu.menu_options_report_add, menu);
+        }
+        else {
+            inflater.inflate(R.menu.menu_options_report_edit, menu);
+        }
+        return true;
+    }
+
+    /**
+     * オプションメニュー
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int      itemId      = item.getItemId();
+        switch(itemId) {
+            case R.id.menuDelete:   // 削除ボタン
+                DeleteConfirmDialogFragment dialog = new DeleteConfirmDialogFragment(_reportEditViewModel);
+                Bundle extras = new Bundle();
+                extras.putInt("id", _idNo);
+                dialog.setArguments(extras);
+                FragmentManager manager = getSupportFragmentManager();
+                dialog.show(manager, "DeleteDialogFragment");
+                return true;
+            case R.id.menuEdit: // 登録・編集ボタン
+                TextView etDate = findViewById(R.id.etDate);
+                String strDate = etDate.getText().toString();
+                TextView etStartTime = findViewById(R.id.etStartTime);
+                String strStartTime = etStartTime.getText().toString();
+                TextView etEndTime = findViewById(R.id.etEndTime);
+                String strEndTime = etEndTime.getText().toString();
+                if(strDate.equals("")) {
+                    Toast.makeText(ReportEditActivity.this, R.string.msg_input_date, Toast.LENGTH_SHORT).show();
+                }
+                else if(strStartTime.equals("")){
+                    Toast.makeText(ReportEditActivity.this, R.string.msg_input_start_time, Toast.LENGTH_SHORT).show();
+                }
+                else if(strEndTime.equals("")){
+                    Toast.makeText(ReportEditActivity.this, R.string.msg_input_end_time, Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    EditText etInputContent = findViewById(R.id.etInputNote);
+                    String inputContent = etInputContent.getText().toString();
+                    Spinner spinner = findViewById(R.id.spWorkKinds);
+                    int workkind = (Integer) spinner.getTag();
+                    Log.e("work category", String.valueOf(workkind));
+                    long result = 0;
+                    Report report = new Report();
+                    report.workdate = strDate;
+                    report.starttime = strStartTime;
+                    report.endtime = strEndTime;
+                    report.workkind = workkind;
+                    report.workin = inputContent;
+                    if(_mode == Consts.MODE_INSERT) {
+                        Log.e("insert", "インサートモード");
+                        result = _reportEditViewModel.insert(report);
+                    }
+                    else {
+                        report.id = _idNo;
+                        result = _reportEditViewModel.update(report);
+                    }
+                    if(result <= 0) {
+                        Toast.makeText(ReportEditActivity.this, R.string.msg_save_err, Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        finish();
+                    }
+                }
+                return true;
+            case android.R.id.home:
+                finish();
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    /**
+     * 日付選択ダイアログ表示ボタンが押されたときのイベント処理用メソッド。
+     *
+     * @param view 画面部品。
+     */
+    public void showDatePickerDialog(View view) {
+        int nowYear       = 0;
+        int nowMonth      = 0;
+        int nowDayOfMonth = 0;
+
+        TextView etDate = findViewById(R.id.etDate);
+        String strDate = etDate.getText().toString();
+
+        nowYear       = Integer.parseInt(strDate.substring(0, 4));
+        nowMonth      = Integer.parseInt(strDate.substring(5, 7)) -1;
+        nowDayOfMonth = Integer.parseInt(strDate.substring(8, 10));
+
+        DatePickerDialog dialog = new DatePickerDialog(ReportEditActivity.this, new DatePickerDialogDateSetListener(), nowYear, nowMonth, nowDayOfMonth);
+        dialog.show();
+    }
+
+    private class DatePickerDialogDateSetListener implements DatePickerDialog.OnDateSetListener {
+        @Override
+        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+            TextView etDate = findViewById(R.id.etDate);
+            Calendar calendar   = Calendar.getInstance();
+            calendar.set(year, month, dayOfMonth);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
+            etDate.setText(sdf.format(calendar.getTime()));
+        }
+    }
+
+    public void showStartTimePickerDialog(View view){
+        int nowHour = 0;
+        int nowMinute = 0;
+
+        TextView etStartTime = findViewById(R.id.etStartTime);
+        String strStartTime = etStartTime.getText().toString();
+
+        nowHour = Integer.parseInt(strStartTime.substring(0, 2));
+        nowMinute = Integer.parseInt(strStartTime.substring(3, 5));
+
+        TimePickerDialog dialog = new TimePickerDialog(ReportEditActivity.this, new TimePickerDialogTimeSetListener(), nowHour, nowMinute, true);
+        dialog.show();
+    }
+
+    private class TimePickerDialogTimeSetListener implements TimePickerDialog.OnTimeSetListener {
+        @Override
+        public void onTimeSet(TimePicker view, int hour, int minute){
+            TextView etStartTime = findViewById(R.id.etStartTime);
+            Calendar calendar   = Calendar.getInstance();
+            calendar.set(Calendar.HOUR_OF_DAY, hour);
+            calendar.set(Calendar.MINUTE, minute);
+            SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
+            etStartTime.setText(sdf.format(calendar.getTime()));
+        }
+    }
 }
