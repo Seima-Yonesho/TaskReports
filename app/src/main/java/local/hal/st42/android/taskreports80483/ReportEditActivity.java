@@ -62,8 +62,14 @@ public class ReportEditActivity extends AppCompatActivity {
     * 更新モードの際、現在表示しているレポートの登録日時。
      */
     private Timestamp _insertDate = new Timestamp(System.currentTimeMillis());
-
-    private int activity = 0;
+    /*
+    * 時間の表示形式
+     */
+    private final String timeFormat = "HH:mm aaa";
+    /*
+    * 日付の表示形式
+     */
+    private final String dateFormat = "yyyy年MM月dd日";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +98,7 @@ public class ReportEditActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {}
         });
 
+        //バックボタン表示
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         Intent intent = getIntent();
@@ -124,7 +131,6 @@ public class ReportEditActivity extends AppCompatActivity {
             spinner1.setSelection(report.workkind);
             _insertDate = report.insertAt;
         }
-
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
     }
@@ -146,7 +152,7 @@ public class ReportEditActivity extends AppCompatActivity {
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int      itemId      = item.getItemId();
+        int itemId = item.getItemId();
         switch(itemId) {
             case R.id.menuDelete:   // 削除ボタン
                 DeleteConfirmDialogFragment dialog = new DeleteConfirmDialogFragment(_reportEditViewModel);
@@ -223,7 +229,10 @@ public class ReportEditActivity extends AppCompatActivity {
 
     private void onClickSaveAndBackButton(){
         Intent intentOld = getIntent();
-        activity = intentOld.getIntExtra("activity", Consts.DetailActivity);
+        /*
+         * アクティビティ判定用の値
+         */
+        int activity = intentOld.getIntExtra("activity", Consts.DetailActivity);
         _idNo = intentOld.getIntExtra("idNo", _idNo);
         Intent intent;
         if(activity == Consts.DetailActivity){
@@ -231,7 +240,6 @@ public class ReportEditActivity extends AppCompatActivity {
             intent.putExtra("idNo", _idNo);
             startActivity(intent);
         }
-        return;
     }
 
     /**
@@ -240,17 +248,11 @@ public class ReportEditActivity extends AppCompatActivity {
      * @param view 画面部品。
      */
     public void showDatePickerDialog(View view) {
-        int nowYear       = 0;
-        int nowMonth      = 0;
-        int nowDayOfMonth = 0;
-
         TextView etDate = findViewById(R.id.etDate);
         String strDate = etDate.getText().toString();
-
-        nowYear       = Integer.parseInt(strDate.substring(0, 4));
-        nowMonth      = Integer.parseInt(strDate.substring(5, 7)) -1;
-        nowDayOfMonth = Integer.parseInt(strDate.substring(8, 10));
-
+        int nowYear       = Integer.parseInt(strDate.substring(0, 4));
+        int nowMonth      = Integer.parseInt(strDate.substring(5, 7)) -1;
+        int nowDayOfMonth = Integer.parseInt(strDate.substring(8, 10));
         DatePickerDialog dialog = new DatePickerDialog(ReportEditActivity.this, new DatePickerDialogDateSetListener(), nowYear, nowMonth, nowDayOfMonth);
         dialog.show();
     }
@@ -261,18 +263,16 @@ public class ReportEditActivity extends AppCompatActivity {
             TextView etDate = findViewById(R.id.etDate);
             Calendar calendar   = Calendar.getInstance();
             calendar.set(year, month, dayOfMonth);
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
+            SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
             etDate.setText(sdf.format(calendar.getTime()));
         }
     }
 
     public void showStartTimePickerDialog(View view){
-        int nowHour = 0;
-        int nowMinute = 0;
         TextView etStartTime = findViewById(R.id.etStartTime);
         String strStartTime = etStartTime.getText().toString();
-        nowHour = Integer.parseInt(strStartTime.substring(0, 2));
-        nowMinute = Integer.parseInt(strStartTime.substring(3, 5));
+        int nowHour = Integer.parseInt(strStartTime.substring(0, 2));
+        int nowMinute = Integer.parseInt(strStartTime.substring(3, 5));
         TimePickerDialog dialog = new TimePickerDialog(ReportEditActivity.this, new StartTimePickerDialogTimeSetListener(), nowHour, nowMinute, false);
         dialog.show();
     }
@@ -281,21 +281,19 @@ public class ReportEditActivity extends AppCompatActivity {
         @Override
         public void onTimeSet(TimePicker view, int hour, int minute){
             TextView etStartTime = findViewById(R.id.etStartTime);
-            Calendar calendar   = Calendar.getInstance();
+            Calendar calendar = Calendar.getInstance();
             calendar.set(Calendar.HOUR_OF_DAY, hour);
             calendar.set(Calendar.MINUTE, minute);
-            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm aaa");
+            SimpleDateFormat sdf = new SimpleDateFormat(timeFormat); //"HH:mm aaa"
             etStartTime.setText(sdf.format(calendar.getTime()));
         }
     }
 
     public void showEndTimePickerDialog(View view){
-        int nowHour = 0;
-        int nowMinute = 0;
         TextView etEndTime = findViewById(R.id.etEndTime);
         String strEndTime = etEndTime.getText().toString();
-        nowHour = Integer.parseInt(strEndTime.substring(0, 2));
-        nowMinute = Integer.parseInt(strEndTime.substring(3, 5));
+        int nowHour = Integer.parseInt(strEndTime.substring(0, 2));
+        int nowMinute = Integer.parseInt(strEndTime.substring(3, 5));
         TimePickerDialog dialog = new TimePickerDialog(ReportEditActivity.this, new EndTimePickerDialogTimeSetListener(), nowHour, nowMinute, false);
         dialog.show();
     }
@@ -307,7 +305,7 @@ public class ReportEditActivity extends AppCompatActivity {
             Calendar calendar   = Calendar.getInstance();
             calendar.set(Calendar.HOUR_OF_DAY, hour);
             calendar.set(Calendar.MINUTE, minute);
-            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm aaa");
+            SimpleDateFormat sdf = new SimpleDateFormat(timeFormat);
             etEndTime.setText(sdf.format(calendar.getTime()));
         }
     }

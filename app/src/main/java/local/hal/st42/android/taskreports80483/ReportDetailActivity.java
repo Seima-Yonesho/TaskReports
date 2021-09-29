@@ -38,6 +38,7 @@ public class ReportDetailActivity extends AppCompatActivity {
         ViewModelProvider.AndroidViewModelFactory factory = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication());
         ViewModelProvider provider = new ViewModelProvider(ReportDetailActivity.this, factory);
         ReportDetailViewModel _reportDetailViewModel = provider.get(ReportDetailViewModel.class);
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitleTextColor(Color.WHITE);

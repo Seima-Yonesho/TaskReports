@@ -45,8 +45,12 @@ public class Consts {
     * 作業種類の色を格納した定数配列
      */
     static final String[] COLOR = new String[]{"#AEB404", "#0404B4", "#088A29", "#0489B1", "#B404AE", "#585858"};
-
+    /*
+    * メインアクティビティを表す定数
+     */
     static final int MainActivity = 21;
-
+    /*
+    * ReportDetailアクティビティを表す定数
+     */
     static final int DetailActivity = 22;
 }

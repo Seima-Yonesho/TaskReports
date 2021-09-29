@@ -34,6 +34,7 @@ public class Report {
     /**
      * 作業終了時刻(時分)
      */
+    @NonNull
     public String endtime;
     /**
      * 作業内容

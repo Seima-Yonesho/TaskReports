@@ -47,7 +47,6 @@ import local.hal.st42.android.taskreports80483.viewmodel.ReportListViewModel;
  * @author Seima Yonesho
  */
 public class MainActivity extends AppCompatActivity {
-
     /**
      * リサイクラービューを表すフィールド。
      */
@@ -108,9 +107,8 @@ public class MainActivity extends AppCompatActivity {
         _reportListObserver = new ReportListObserver();
         _reportListLiveData = new MutableLiveData<>();
 
-        SharedPreferences settings      = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         _menuCategory = settings.getInt("WorkCategory", Consts.ALL);
-
         createRecyclerView();
     }
 
@@ -151,11 +149,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
-        SharedPreferences        settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor   = settings.edit();
 
         boolean returnVal = true;
-        int     itemId    = item.getItemId();
+        int itemId = item.getItemId();
         switch(itemId) {
             case R.id.menuListOptionAll:
                 _menuCategory = Consts.ALL;
@@ -236,7 +234,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * リサイクラービューで利用するビューホルダクラス。
      */
-    private class ReportViewHolder extends RecyclerView.ViewHolder {
+    private static class ReportViewHolder extends RecyclerView.ViewHolder {
         /**
          * レポートID
          */
@@ -337,7 +335,6 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
     }
-
     /*
     * 編集ボタンをタップした時の処理が記述されたメンバクラス。
      */
