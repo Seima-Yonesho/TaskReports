@@ -1,6 +1,5 @@
 package local.hal.st42.android.taskreports80483;
 
-import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
@@ -108,7 +107,7 @@ public class ReportEditActivity extends AppCompatActivity {
             TextView tvTitle = findViewById(R.id.tvTitle);
             tvTitle.setText(R.string.tv_title_insert);
             Calendar calendar = Calendar.getInstance();
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
+            SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
             TextView etInputDate = findViewById(R.id.etDate);
             etInputDate.setText(sdf.format(calendar.getTime()));
             TextView etStartTime = findViewById(R.id.etStartTime);

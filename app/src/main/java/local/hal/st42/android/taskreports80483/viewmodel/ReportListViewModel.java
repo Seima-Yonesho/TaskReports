@@ -1,16 +1,9 @@
 package local.hal.st42.android.taskreports80483.viewmodel;
 
 import android.app.Application;
-import android.util.Log;
-
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-
-import com.google.common.util.concurrent.ListenableFuture;
-
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-
 import local.hal.st42.android.taskreports80483.Consts;
 import local.hal.st42.android.taskreports80483.dataaccess.AppDatabase;
 import local.hal.st42.android.taskreports80483.dataaccess.Report;
