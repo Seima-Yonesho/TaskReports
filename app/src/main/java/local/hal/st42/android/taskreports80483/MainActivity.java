@@ -303,9 +303,9 @@ public class MainActivity extends AppCompatActivity {
             holder._btRowEdit.setTag(item.id);
             holder._btRowEdit.setOnClickListener(new OnEditButtonClickListener());
             holder._tvRowDate.setText(item.workdate);
+            TextView title = (TextView) holder._tvRowTitle;
+            title.setTextColor(Color.parseColor(Consts.COLOR[item.workkind]));
             LinearLayout row = (LinearLayout) holder._tvRowTitle.getParent().getParent();
-//            row.setBackgroundColor(Color.rgb(176, 0, 32));
-
             row.setTag(item.id);
         }
 
@@ -347,6 +347,7 @@ public class MainActivity extends AppCompatActivity {
             Button btRowEdit = (Button) view;
             int idNo = (Integer) btRowEdit.getTag();
             Intent intent = new Intent(getApplicationContext(), ReportEditActivity.class);
+            intent.putExtra("mode", Consts.MODE_EDIT);
             intent.putExtra("idNo", idNo);
             startActivity(intent);
         }

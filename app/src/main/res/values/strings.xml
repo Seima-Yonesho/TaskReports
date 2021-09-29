@@ -25,5 +25,12 @@
     <string name="del_dialog_message">このメモを削除してもよろしいですか?</string>
     <string name="del_dialog_positive">削除</string>
     <string name="del_dialog_negative">キャンセル</string>
-    
+    <string name="msg_input_time">時間を入力し直してください</string>
+    <string name="tv_title_detail">レポート詳細</string>
+    <string name="tv_detail_date">日付</string>
+    <string name="tv_detail_start_time">開始時間</string>
+    <string name="tv_detail_end_time">終了時間</string>
+    <string name="tv_detail_work_in">作業内容</string>
+    <string name="tv_detail_insert_at">登録日時</string>
+    <string name="tv_detail_appdate_at">更新日時</string>
 </resources>

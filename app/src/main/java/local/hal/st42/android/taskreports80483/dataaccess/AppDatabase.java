@@ -5,6 +5,7 @@ import android.content.Context;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.TypeConverters;
 
 /**
  * ST42 Android
@@ -13,6 +14,7 @@ import androidx.room.RoomDatabase;
  * @author Seima Yonesho
  */
 @Database(entities = {Report.class}, version = 1, exportSchema = false)
+@TypeConverters(TimestampConverter.class)
 public abstract class AppDatabase extends RoomDatabase {
     /**
      * データベースインスタンス。

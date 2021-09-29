@@ -5,7 +5,6 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -25,6 +24,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -53,6 +53,14 @@ public class ReportEditActivity extends AppCompatActivity {
      * レポート情報編集モデルオブジェクト。
      */
     private ReportEditViewModel _reportEditViewModel;
+    /*
+    * 時間入力のデフォルト値
+     */
+    private final String defaultInputTime = "00:00";
+    /*
+    * 更新モードの際、現在表示しているレポートの登録日時。
+     */
+    private Timestamp _insertDate = new Timestamp(System.currentTimeMillis());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,26 +79,16 @@ public class ReportEditActivity extends AppCompatActivity {
         Spinner spinner = findViewById(R.id.spWorkKinds);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, Consts.CATEGORY);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // spinner に adapter をセット
         spinner.setAdapter(adapter);
-        // リスナーを登録
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            //　アイテムが選択された時
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Spinner spinner = (Spinner)parent;
-                String item = (String)spinner.getSelectedItem();
                 spinner.setTag(position);
             }
-            //　アイテムが選択されなかった
-            public void onNothingSelected(AdapterView<?> parent) {
-                //
-            }
+            public void onNothingSelected(AdapterView<?> parent) {}
         });
 
-        /**
-         * 戻るボタンを有効にする
-         */
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         Intent intent = getIntent();
@@ -99,19 +97,14 @@ public class ReportEditActivity extends AppCompatActivity {
         if(_mode == Consts.MODE_INSERT) {
             TextView tvTitle = findViewById(R.id.tvTitle);
             tvTitle.setText(R.string.tv_title_insert);
-
             Calendar calendar = Calendar.getInstance();
-
-            //SimpleDateFormatクラスでフォーマットパターンを設定する
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
-
             TextView etInputDate = findViewById(R.id.etDate);
             etInputDate.setText(sdf.format(calendar.getTime()));
-
             TextView etStartTime = findViewById(R.id.etStartTime);
-            etStartTime.setText("00:00");
+            etStartTime.setText(defaultInputTime);
             TextView etEndTime = findViewById(R.id.etEndTime);
-            etEndTime.setText("00:00");
+            etEndTime.setText(defaultInputTime);
         }
         else {
             _idNo    = intent.getIntExtra("idNo", 0);
@@ -120,6 +113,13 @@ public class ReportEditActivity extends AppCompatActivity {
             etInputNote.setText(report.workin);
             TextView etDate = findViewById(R.id.etDate);
             etDate.setText(report.workdate);
+            TextView etStartTime = findViewById(R.id.etStartTime);
+            etStartTime.setText(report.starttime);
+            TextView etEndTime = findViewById(R.id.etEndTime);
+            etEndTime.setText(report.endtime);
+            Spinner spinner1 = findViewById(R.id.spWorkKinds);
+            spinner1.setSelection(report.workkind);
+            _insertDate = report.insertAt;
         }
 
         ActionBar actionBar = getSupportActionBar();
@@ -163,38 +163,45 @@ public class ReportEditActivity extends AppCompatActivity {
                 if(strDate.equals("")) {
                     Toast.makeText(ReportEditActivity.this, R.string.msg_input_date, Toast.LENGTH_SHORT).show();
                 }
-                else if(strStartTime.equals("")){
+                else if(strStartTime.equals(defaultInputTime)){
                     Toast.makeText(ReportEditActivity.this, R.string.msg_input_start_time, Toast.LENGTH_SHORT).show();
                 }
-                else if(strEndTime.equals("")){
+                else if(strEndTime.equals(defaultInputTime)){
                     Toast.makeText(ReportEditActivity.this, R.string.msg_input_end_time, Toast.LENGTH_SHORT).show();
                 }
                 else {
-                    EditText etInputContent = findViewById(R.id.etInputNote);
-                    String inputContent = etInputContent.getText().toString();
-                    Spinner spinner = findViewById(R.id.spWorkKinds);
-                    int workkind = (Integer) spinner.getTag();
-                    Log.e("work category", String.valueOf(workkind));
-                    long result = 0;
-                    Report report = new Report();
-                    report.workdate = strDate;
-                    report.starttime = strStartTime;
-                    report.endtime = strEndTime;
-                    report.workkind = workkind;
-                    report.workin = inputContent;
-                    if(_mode == Consts.MODE_INSERT) {
-                        Log.e("insert", "インサートモード");
-                        result = _reportEditViewModel.insert(report);
+                    Boolean checkTime = checkTime(strStartTime, strEndTime);
+                    if(checkTime){
+                        Toast.makeText(ReportEditActivity.this, R.string.msg_input_time, Toast.LENGTH_SHORT).show();
                     }
                     else {
-                        report.id = _idNo;
-                        result = _reportEditViewModel.update(report);
-                    }
-                    if(result <= 0) {
-                        Toast.makeText(ReportEditActivity.this, R.string.msg_save_err, Toast.LENGTH_SHORT).show();
-                    }
-                    else {
-                        finish();
+                        EditText etInputContent = findViewById(R.id.etInputNote);
+                        String inputContent = etInputContent.getText().toString();
+                        Spinner spinner = findViewById(R.id.spWorkKinds);
+                        int workkind = (Integer) spinner.getTag();
+                        long result = 0;
+                        Report report = new Report();
+                        report.workdate = strDate;
+                        report.starttime = strStartTime;
+                        report.endtime = strEndTime;
+                        report.workkind = workkind;
+                        report.workin = inputContent;
+                        report.updatedAt = new Timestamp(System.currentTimeMillis());
+                        if(_mode == Consts.MODE_INSERT) {
+                            report.insertAt = new Timestamp(System.currentTimeMillis());
+                            result = _reportEditViewModel.insert(report);
+                        }
+                        else {
+                            report.insertAt = _insertDate;
+                            report.id = _idNo;
+                            result = _reportEditViewModel.update(report);
+                        }
+                        if(result <= 0) {
+                            Toast.makeText(ReportEditActivity.this, R.string.msg_save_err, Toast.LENGTH_SHORT).show();
+                        }
+                        else {
+                            finish();
+                        }
                     }
                 }
                 return true;
@@ -240,26 +247,61 @@ public class ReportEditActivity extends AppCompatActivity {
     public void showStartTimePickerDialog(View view){
         int nowHour = 0;
         int nowMinute = 0;
-
         TextView etStartTime = findViewById(R.id.etStartTime);
         String strStartTime = etStartTime.getText().toString();
-
         nowHour = Integer.parseInt(strStartTime.substring(0, 2));
         nowMinute = Integer.parseInt(strStartTime.substring(3, 5));
-
-        TimePickerDialog dialog = new TimePickerDialog(ReportEditActivity.this, new TimePickerDialogTimeSetListener(), nowHour, nowMinute, true);
+        TimePickerDialog dialog = new TimePickerDialog(ReportEditActivity.this, new StartTimePickerDialogTimeSetListener(), nowHour, nowMinute, false);
         dialog.show();
     }
 
-    private class TimePickerDialogTimeSetListener implements TimePickerDialog.OnTimeSetListener {
+    private class StartTimePickerDialogTimeSetListener implements TimePickerDialog.OnTimeSetListener {
         @Override
         public void onTimeSet(TimePicker view, int hour, int minute){
             TextView etStartTime = findViewById(R.id.etStartTime);
             Calendar calendar   = Calendar.getInstance();
             calendar.set(Calendar.HOUR_OF_DAY, hour);
             calendar.set(Calendar.MINUTE, minute);
-            SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm aaa");
             etStartTime.setText(sdf.format(calendar.getTime()));
         }
+    }
+
+    public void showEndTimePickerDialog(View view){
+        int nowHour = 0;
+        int nowMinute = 0;
+        TextView etEndTime = findViewById(R.id.etEndTime);
+        String strEndTime = etEndTime.getText().toString();
+        nowHour = Integer.parseInt(strEndTime.substring(0, 2));
+        nowMinute = Integer.parseInt(strEndTime.substring(3, 5));
+        TimePickerDialog dialog = new TimePickerDialog(ReportEditActivity.this, new EndTimePickerDialogTimeSetListener(), nowHour, nowMinute, false);
+        dialog.show();
+    }
+
+    private class EndTimePickerDialogTimeSetListener implements TimePickerDialog.OnTimeSetListener {
+        @Override
+        public void onTimeSet(TimePicker view, int hour, int minute){
+            TextView etEndTime = findViewById(R.id.etEndTime);
+            Calendar calendar   = Calendar.getInstance();
+            calendar.set(Calendar.HOUR_OF_DAY, hour);
+            calendar.set(Calendar.MINUTE, minute);
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm aaa");
+            etEndTime.setText(sdf.format(calendar.getTime()));
+        }
+    }
+
+    private boolean checkTime(String startTime, String endTime){
+        Boolean errFlg = false;
+        int hourOfStartTime = Integer.parseInt(startTime.substring(0, 2));
+        int minuteOfStartTime = Integer.parseInt(startTime.substring(3, 5));
+        int hourOfEndTime = Integer.parseInt(endTime.substring(0, 2));
+        int minuteOfEndTime = Integer.parseInt(endTime.substring(3, 5));
+        if(hourOfStartTime > hourOfEndTime){
+            errFlg = true;
+        }
+        else if(hourOfStartTime == hourOfEndTime && minuteOfStartTime >= minuteOfEndTime){
+            errFlg = true;
+        }
+        return errFlg;
     }
 }

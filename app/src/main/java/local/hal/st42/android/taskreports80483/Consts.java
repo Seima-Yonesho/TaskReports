@@ -37,6 +37,13 @@ public class Consts {
      * 全タスクを表す定数フィールド。
      */
     public static final int ALL = 6;
-
+    /*
+    * 作業種類を格納した定数配列
+     */
     static final String[] CATEGORY = new String[]{"実装", "打ち合わせ", "資料作成", "顧客対応", "設計", "その他"};
+    /*
+    * 作業種類の色を格納した定数配列
+     */
+    static final String[] COLOR = new String[]{"#AEB404", "#0404B4", "#088A29", "#0489B1", "#B404AE", "#585858"};
+
 }

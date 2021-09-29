@@ -3,13 +3,13 @@
     package="local.hal.st42.android.taskreports80483">
 
     <application
-        android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TaskReports80483">
-        <activity android:name=".ReportEditActivity"></activity>
+        <activity android:name=".ReportEditActivity" />
+        <activity android:name=".ReportDetailActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

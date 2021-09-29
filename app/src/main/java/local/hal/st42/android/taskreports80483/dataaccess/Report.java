@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.sql.Timestamp;
+
 /**
  *
  * ST42 Android　課題6 作業報告管理アプリ
@@ -41,5 +43,15 @@ public class Report {
      * 作業種類
      */
     public int workkind;
+    /**
+     * 登録日時。
+     */
+    @NonNull
+    public Timestamp insertAt;
+    /**
+     * 更新日時。
+     */
+    @NonNull
+    public Timestamp updatedAt;
 
 }
