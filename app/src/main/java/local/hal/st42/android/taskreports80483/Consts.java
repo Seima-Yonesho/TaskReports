@@ -46,4 +46,7 @@ public class Consts {
      */
     static final String[] COLOR = new String[]{"#AEB404", "#0404B4", "#088A29", "#0489B1", "#B404AE", "#585858"};
 
+    static final int MainActivity = 21;
+
+    static final int DetailActivity = 22;
 }

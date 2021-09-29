@@ -349,6 +349,7 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(getApplicationContext(), ReportEditActivity.class);
             intent.putExtra("mode", Consts.MODE_EDIT);
             intent.putExtra("idNo", idNo);
+            intent.putExtra("activity", Consts.MainActivity);
             startActivity(intent);
         }
     }

@@ -1,5 +1,6 @@
 package local.hal.st42.android.taskreports80483;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
@@ -61,6 +62,8 @@ public class ReportEditActivity extends AppCompatActivity {
     * 更新モードの際、現在表示しているレポートの登録日時。
      */
     private Timestamp _insertDate = new Timestamp(System.currentTimeMillis());
+
+    private int activity = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -200,16 +203,35 @@ public class ReportEditActivity extends AppCompatActivity {
                             Toast.makeText(ReportEditActivity.this, R.string.msg_save_err, Toast.LENGTH_SHORT).show();
                         }
                         else {
+                            if(_mode == Consts.MODE_EDIT){
+                                onClickSaveAndBackButton();
+                            }
                             finish();
                         }
                     }
                 }
                 return true;
             case android.R.id.home:
+                if(_mode == Consts.MODE_EDIT){
+                    onClickSaveAndBackButton();
+                }
                 finish();
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void onClickSaveAndBackButton(){
+        Intent intentOld = getIntent();
+        activity = intentOld.getIntExtra("activity", Consts.DetailActivity);
+        _idNo = intentOld.getIntExtra("idNo", _idNo);
+        Intent intent;
+        if(activity == Consts.DetailActivity){
+            intent = new Intent(getApplicationContext(), ReportDetailActivity.class);
+            intent.putExtra("idNo", _idNo);
+            startActivity(intent);
+        }
+        return;
     }
 
     /**

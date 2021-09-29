@@ -81,6 +81,7 @@ public class ReportDetailActivity extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), ReportEditActivity.class);
                 intent.putExtra("mode", Consts.MODE_EDIT);
                 intent.putExtra("idNo", _idNo);
+                intent.putExtra("activity", Consts.DetailActivity);
                 startActivity(intent);
             case android.R.id.home:
                 finish();
